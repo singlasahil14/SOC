@@ -13,8 +13,6 @@ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves i
 
 ## Demonstration
 
-For the images with label water jug, when feature[1378] (visually identified as 'water jug handle') is less than 0.089335, error rate increases to 100.0% from 50.0%, i.e an increase of 50.0% in the failure rate.
-
 ![demo](./figures/SOC_demo.png)
 
 ## Citation
