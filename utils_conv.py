@@ -5,8 +5,6 @@ import numpy as np
 import math
 import time
 
-import pandas as pd
-import seaborn as sns
 from matplotlib import pyplot as plt
 
 def conv_singular_values_numpy(kernel, input_shape):
