@@ -9,7 +9,7 @@ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves i
 
 ## How to run?
 
-+ Run python train_robust.py --conv-type skew  --block-size BLOCK_SIZE --dataset DATASET_NAME
++ Run ```python train_robust.py --conv-type skew  --block-size BLOCK_SIZE --dataset DATASET_NAME```
 
 ## Demonstration
 
