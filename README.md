@@ -1,6 +1,6 @@
-# Skew Orthogonal Convolutions
+# Skew Orthogonal Convolutions, Last layer normalization, Certificate Regularization and Householder Activations
 
-SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves improved standard and provably robust accuracy over the prior works.
+SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves state-of-the-art standard and provably robust accuracy compared to the prior works on orthogonal convolutions. Last Layer normalization, Certificate Regularization and Householder Activations are additional tricks that lead to improved performance.
 
 ## Prerequisites
 
@@ -9,13 +9,15 @@ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves i
 
 ## How to run?
 
-+ Run ```python train_robust.py --conv-type skew  --block-size BLOCK_SIZE --dataset DATASET_NAME```
++ Run ```python train_robust.py --conv-layer CONV_LAYER  --num-blocks BLOCK_SIZE --dataset DATASET_NAME```
++ Here, DATASET_NAME can be either cifar10 or cifar100. CONV_LAYER can be either soc, bcop, cayley.
 
 ## Demonstration
 
 ![demo](./figures/SOC_demo.png)
 
-## Citation
+## Citations
+If you find this repository useful for your research, please cite:
 
 ```
 @inproceedings{singlafeiziSOC2021,
@@ -24,4 +26,14 @@ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves i
   booktitle={ICML},
   year={2021}
 }
+
+@inproceedings{
+singla2022improved,
+title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
+author={Sahil Singla and Surbhi Singla and Soheil Feizi},
+booktitle={International Conference on Learning Representations},
+year={2022},
+url={https://openreview.net/forum?id=tD7eCtaSkR}
+}
 ```
+
