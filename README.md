@@ -15,7 +15,7 @@
 
 ```python train_robust.py --conv-layer CONV --activation ACT --num-blocks BLOCKS --dataset DATASET --gamma GAMMA```
 + CONV can be bcop/cayley/soc
-+ ACT can be maxmin/hh1/hh2. hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
++ ACT can be maxmin/hh1/hh2. hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in the demonstration below.
 + BLOCKS are an integer from 1 to 8
 + GAMMA is the certificate regularization coefficient
 + Use the flag ```--lln``` to activate last layer normalization
