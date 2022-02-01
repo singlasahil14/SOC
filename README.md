@@ -1,6 +1,6 @@
 # Skew Orthogonal Convolutions
 
-+ **Skew Orthogonal Convolution (SOC)** is a convolution layer that has an Orthogonal Jacobian matrix and achieves state-of-the-art standard and provably robust accuracy compared to the other orthogonal convolutions. 
++ **Skew Orthogonal Convolution (SOC)** is a convolution layer that has an orthogonal Jacobian and achieves state-of-the-art standard and provably robust accuracy compared to other orthogonal convolutions. 
 + **Last Layer normalization (LLN)** leads to improved performance when the number of classes is large.
 + **Certificate Regularization (CR)** leads to significantly improved robustness certificates.
 + **Householder Activations (HH)** improve the performance for deeper networks.
