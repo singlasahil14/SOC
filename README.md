@@ -43,8 +43,7 @@ If you find this repository useful for your research, please cite:
 title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
 author={Sahil Singla and Surbhi Singla and Soheil Feizi},
 booktitle={International Conference on Learning Representations},
-year={2022},
-url={https://openreview.net/forum?id=tD7eCtaSkR}
+year={2022}
 }
 ```
 
