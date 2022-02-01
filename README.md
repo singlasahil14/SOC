@@ -32,8 +32,8 @@
 ![demo](./figures/SOC_demo.png)
 
 ## Demonstration of Householder Activations
-+ Illustration of the hh1 $\sigma_\theta$ activation function
-![demo](./figures/hh1_demo.jpg)
++ Illustration of the hh1 activation function (Figure 1 in the paper: Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100})
+![demo](./figures/hh1_demo.png)
 
 
 ## Citations
