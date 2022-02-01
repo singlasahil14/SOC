@@ -32,7 +32,7 @@
 ![demo](./figures/SOC_demo.png)
 
 ## Demonstration of Householder Activations
-+ The hh_{1} activation function
++ Illustration of the hh1 activation function
 ![demo](./figures/hh1_demo.jpg)
 
 
