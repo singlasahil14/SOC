@@ -10,15 +10,16 @@
 + Python 3.7+, Pytorch 1.6+
 + A recent NVIDIA GPU
 
-## How to run?
+## How to train 1-Lipschitz Convnets?
 
-+ Run ```python train_robust.py --conv-layer CONV_LAYER --activation ACTIVATION_NAME --num-blocks BLOCK_SIZE --dataset DATASET_NAME --beta BETA```
+```python train_robust.py --conv-layer CONV_LAYER --activation ACTIVATION_NAME --num-blocks BLOCK_SIZE --dataset DATASET_NAME --beta BETA```
 + CONV_LAYER can be bcop/cayley/soc, ACTIVATION_NAME can be maxmin/hh1/hh2. DATASET_NAME can be cifar10/cifar100.
 + hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
 + BETA is the certificate regularization coefficient
 + Use --lln to activate last layer normalization
 
-+ Run ```python train_standard.py --conv-layer CONV_LAYER --model-name MODEL_NAME --dataset DATASET_NAME```
+## How to train Convnets using orthogonal convolutions?
+``python train_standard.py --conv-layer CONV_LAYER --model-name MODEL_NAME --dataset DATASET_NAME```
 + DATASET_NAME can be cifar10/cifar100. CONV_LAYER can be standard/bcop/cayley/soc, MODEL_NAME can be resnet18/resnet34/resnet50/resnet101/resnet152
 
 ## Demonstration
@@ -36,8 +37,7 @@ If you find this repository useful for your research, please cite:
   year={2021}
 }
 
-@inproceedings{
-singla2022improved,
+@inproceedings{singla2022improved,
 title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
 author={Sahil Singla and Surbhi Singla and Soheil Feizi},
 booktitle={International Conference on Learning Representations},
