@@ -1,4 +1,3 @@
-import apex.amp as amp
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -19,22 +18,33 @@ lower_limit = ((0 - mu)/ std)
 def clamp(X, lower_limit, upper_limit):
     return torch.max(torch.min(X, upper_limit), lower_limit)
 
-def get_loaders(dir_, batch_size, dataset_name='cifar10'):
+def get_loaders(dir_, batch_size, dataset_name='cifar10', normalize=True):
     if dataset_name == 'cifar10':
         dataset_func = datasets.CIFAR10
     elif dataset_name == 'cifar100':
         dataset_func = datasets.CIFAR100
     
-    train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize(cifar10_mean, cifar10_std),
-    ])
-    test_transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(cifar10_mean, cifar10_std),
-    ])
+    if normalize:
+        train_transform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(cifar10_mean, cifar10_std),
+        ])
+        test_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(cifar10_mean, cifar10_std),
+        ])
+    else:
+        train_transform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+        ])
+        test_transform = transforms.Compose([
+            transforms.ToTensor(),
+        ])
+        
     num_workers = 4
     train_dataset = dataset_func(
         dir_, train=True, transform=train_transform, download=True)
@@ -83,7 +93,7 @@ def attack_pgd(model, X, y, epsilon, alpha, attack_iters, restarts, opt=None):
             d = clamp(d, lower_limit - X[index[0], :, :, :], upper_limit - X[index[0], :, :, :])
             delta.data[index[0], :, :, :] = d
             delta.grad.zero_()
-        all_loss = F.cross_entropy(model(X+delta), y, reduction='none').detach()
+        all_loss = F.cross_entropy(model(X + delta), y, reduction='none').detach()
         max_delta[all_loss >= max_loss] = delta.detach()[all_loss >= max_loss]
         max_loss = torch.max(max_loss, all_loss)
     return max_delta
@@ -141,8 +151,8 @@ def attack_pgd_l2(model, X, y, epsilon, alpha, attack_iters, restarts, opt=None)
     return max_delta
 
 def evaluate_pgd_l2(test_loader, model, attack_iters, restarts, limit_n=float("inf")):
-    epsilon = (127.5 / 255.) / std
-    alpha = (20. / 255.) / std
+    epsilon = (36 / 255.) / std
+    alpha = epsilon/5.
     pgd_loss = 0
     pgd_acc = 0
     n = 0
@@ -175,11 +185,44 @@ def evaluate_standard(test_loader, model):
             n += y.size(0)
     return test_loss/n, test_acc/n
 
+def ortho_certificates(output, class_indices, L):
+    batch_size = output.shape[0]
+    batch_indices = torch.arange(batch_size)
+    
+    onehot = torch.zeros_like(output).cuda()
+    onehot[torch.arange(output.shape[0]), class_indices] = 1.
+    output_trunc = output - onehot*1e6
+
+    output_class_indices = output[batch_indices, class_indices]
+    output_nextmax = torch.max(output_trunc, dim=1)[0]
+    output_diff = output_class_indices - output_nextmax
+    return output_diff/(math.sqrt(2)*L)
+
+def lln_certificates(output, class_indices, last_layer, L):
+    batch_size = output.shape[0]
+    batch_indices = torch.arange(batch_size)
+    
+    onehot = torch.zeros_like(output).cuda()
+    onehot[batch_indices, class_indices] = 1.
+    output_trunc = output - onehot*1e6    
+        
+    lln_weight = last_layer.lln_weight
+    lln_weight_indices = lln_weight[class_indices, :]
+    lln_weight_diff = lln_weight_indices.unsqueeze(1) - lln_weight.unsqueeze(0)
+    lln_weight_diff_norm = torch.norm(lln_weight_diff, dim=2)
+    lln_weight_diff_norm = lln_weight_diff_norm + onehot
+
+    output_class_indices = output[batch_indices, class_indices]
+    output_diff = output_class_indices.unsqueeze(1) - output_trunc
+    all_certificates = output_diff/(lln_weight_diff_norm*L)
+    return torch.min(all_certificates, dim=1)[0]
+
 def evaluate_certificates(test_loader, model, L, epsilon=36.):
     losses_list = []
     certificates_list = []
     correct_list = []
     model.eval()
+
     with torch.no_grad():
         for i, (X, y) in enumerate(test_loader):
             X, y = X.cuda(), y.cuda()
@@ -189,29 +232,64 @@ def evaluate_certificates(test_loader, model, L, epsilon=36.):
 
             output_max, output_amax = torch.max(output, dim=1)
             
-            onehot = torch.zeros_like(output).cuda()
-            onehot[torch.arange(output.shape[0]), output_amax] = 1.
-            
-            output_trunc = output - onehot*1e6
-            
-            output_nextmax = torch.max(output_trunc, dim=1)[0]
-            output_diff = output_max - output_nextmax
-            
-            certificates = output_diff/(math.sqrt(2)*L)
+            if model.lln:
+                certificates = lln_certificates(output, output_amax, model.last_layer, L)
+            else:
+                certificates = ortho_certificates(output, output_amax, L)
+                
             correct = (output_amax==y)
-            
             certificates_list.append(certificates)
             correct_list.append(correct)
             
         losses_array = torch.cat(losses_list, dim=0).cpu().numpy()
         certificates_array = torch.cat(certificates_list, dim=0).cpu().numpy()
         correct_array = torch.cat(correct_list, dim=0).cpu().numpy()
-        
-    mean_loss = np.mean(losses_array)
-    mean_acc = np.mean(correct_array)
-    
-    mean_certificates = (certificates_array * correct_array).sum()/correct_array.sum()
-    
-    robust_correct_array = (certificates_array > (epsilon/255.)) & correct_array
-    robust_correct = robust_correct_array.sum()/robust_correct_array.shape[0]
-    return mean_loss, mean_acc, mean_certificates, robust_correct
+    return losses_array, correct_array, certificates_array
+
+
+from cayley_ortho_conv import Cayley, CayleyLinear
+from block_ortho_conv import BCOP
+from skew_ortho_conv import SOC
+
+conv_mapping = {
+    'standard': nn.Conv2d,
+    'soc': SOC,
+    'bcop': BCOP,
+    'cayley': Cayley
+}
+
+from custom_activations import MaxMin, HouseHolder, HouseHolder_Order_2
+
+activation_dict = {
+    'relu': F.relu,
+    'swish': F.silu,
+    'sigmoid': F.sigmoid,
+    'tanh': F.tanh,
+    'softplus': F.softplus,
+    'maxmin': MaxMin()
+}
+
+def activation_mapping(activation_name, channels=None):
+    if activation_name == 'hh1':
+        assert channels is not None, channels
+        activation_func = HouseHolder(channels=channels)
+    elif activation_name == 'hh2':
+        assert channels is not None, channels
+        activation_func = HouseHolder_Order_2(channels=channels)
+    else:
+        activation_func = activation_dict[activation_name]
+    return activation_func
+
+def parameter_lists(model):
+    conv_params = []
+    activation_params = []
+    other_params = []
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            if 'activation' in name:
+                activation_params.append(param)
+            elif 'conv' in name:
+                conv_params.append(param)
+            else:
+                other_params.append(param)
+    return conv_params, activation_params, other_params
