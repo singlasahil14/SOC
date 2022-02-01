@@ -1,6 +1,9 @@
 # Skew Orthogonal Convolutions, Last layer normalization, Certificate Regularization and Householder Activations
 
-SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves state-of-the-art standard and provably robust accuracy compared to the prior works on orthogonal convolutions. Last Layer normalization, Certificate Regularization and Householder Activations are additional tricks that lead to improved performance.
++ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves state-of-the-art standard and provably robust accuracy compared to the other orthogonal convolutions. 
++ Last Layer normalization leads to improved performance when the number of classes is large.
++ Certificate Regularization leads to significantly improved robustness certificates.
++ Householder Activations improves the performance for deeper networks.
 
 ## Prerequisites
 
@@ -9,8 +12,14 @@ SOC is a convolution layer that has an Orthogonal Jacobian matrix and achieves s
 
 ## How to run?
 
-+ Run ```python train_robust.py --conv-layer CONV_LAYER  --num-blocks BLOCK_SIZE --dataset DATASET_NAME```
-+ Here, DATASET_NAME can be either cifar10 or cifar100. CONV_LAYER can be either soc, bcop, cayley.
++ Run ```python train_robust.py --conv-layer CONV_LAYER --activation ACTIVATION_NAME --num-blocks BLOCK_SIZE --dataset DATASET_NAME --beta BETA```
++ CONV_LAYER can be bcop/cayley/soc, ACTIVATION_NAME can be maxmin/hh1/hh2. DATASET_NAME can be cifar10/cifar100.
++ hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
++ BETA is the certificate regularization coefficient
++ Use --lln to activate last layer normalization
+
++ Run ```python train_standard.py --conv-layer CONV_LAYER --model-name MODEL_NAME --dataset DATASET_NAME```
++ DATASET_NAME can be cifar10/cifar100. CONV_LAYER can be standard/bcop/cayley/soc, MODEL_NAME can be resnet18/resnet34/resnet50/resnet101/resnet152
 
 ## Demonstration
 
