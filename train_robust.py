@@ -52,7 +52,7 @@ def get_args():
     
     # Other specifications
     parser.add_argument('--epsilon', default=36, type=int)
-    parser.add_argument('--out-dir', default='test/LipConvnet', type=str, help='Output directory')
+    parser.add_argument('--out-dir', default='LipConvnet', type=str, help='Output directory')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     return parser.parse_args()
 
