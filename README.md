@@ -32,7 +32,7 @@
 ![demo](./figures/SOC_demo.png)
 
 ## Demonstration of Householder Activations
-![demo](./figures/hh1_demo.jpeg)
+![demo](./figures/hh1_demo.jpg)
 ![demo](./figures/hh2_demo.png)
 
 ## Citations
