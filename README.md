@@ -23,7 +23,7 @@
 
 ## How to train Standard Convnets using Orthogonal Convolutions?
 ```python train_standard.py --conv-layer CONV --model-name MODEL --dataset DATASET```
-+ CONV: bcop, cayley, soc (Use standard to train using standard convolution)
++ CONV: bcop, cayley, soc (Use ```standard``` to train using standard convolution)
 + MODEL: resnet18, resnet34, resnet50, resnet101, resnet152
 + DATASET: cifar10, cifar100
 
