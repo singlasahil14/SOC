@@ -46,7 +46,7 @@ def get_args():
                         help='dataset to use for training')
     
     # Other specifications
-    parser.add_argument('--out-dir', default='test/standard', type=str, help='Output directory')
+    parser.add_argument('--out-dir', default='standard', type=str, help='Output directory')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     return parser.parse_args()
 
