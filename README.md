@@ -13,20 +13,25 @@
 
 ## How to train 1-Lipschitz Convnets?
 
-```python train_robust.py --conv-layer CONV_LAYER --activation ACTIVATION_NAME --num-blocks BLOCK_SIZE --dataset DATASET_NAME --gamma GAMMA```
-+ CONV_LAYER can be bcop/cayley/soc
-+ ACTIVATION_NAME can be maxmin/hh1/hh2. hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
+```python train_robust.py --conv-layer CONV --activation ACT --num-blocks BLOCKS --dataset DATASET --gamma GAMMA```
++ CONV can be bcop/cayley/soc
++ ACT can be maxmin/hh1/hh2. hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
++ BLOCKS are an integer from 1 to 8
 + GAMMA is the certificate regularization coefficient
 + Use the flag ```--lln``` to activate last layer normalization
-+ DATASET_NAME can be cifar10/cifar100.
++ DATASET can be cifar10/cifar100.
 
 ## How to train Standard Convnets using Orthogonal Convolutions?
-```python train_standard.py --conv-layer CONV_LAYER --model-name MODEL_NAME --dataset DATASET_NAME```
-+ DATASET_NAME can be cifar10/cifar100. CONV_LAYER can be standard/bcop/cayley/soc, MODEL_NAME can be resnet18/resnet34/resnet50/resnet101/resnet152
+```python train_standard.py --conv-layer CONV --model-name MODEL --dataset DATASET```
++ CONV can be standard/bcop/cayley/soc
++ MODEL can be resnet18/resnet34/resnet50/resnet101/resnet152
++ DATASET can be cifar10/cifar100
 
 ## Demonstration
 
 ![demo](./figures/SOC_demo.png)
+![demo](./figures/hh1_demo.png)
+![demo](./figures/hh2_demo.png)
 
 ## Citations
 If you find this repository useful for your research, please cite:
