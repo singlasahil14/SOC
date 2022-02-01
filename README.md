@@ -14,18 +14,18 @@
 ## How to train 1-Lipschitz Convnets?
 
 ```python train_robust.py --conv-layer CONV --activation ACT --num-blocks BLOCKS --dataset DATASET --gamma GAMMA```
-+ CONV can be bcop/cayley/soc
-+ ACT can be maxmin/hh1/hh2. hh1 and hh2 are the householder activations of order 1 and 2 respectively. Both are illustrated below.
-+ BLOCKS are an integer from 1 to 8
-+ GAMMA is the certificate regularization coefficient
-+ Use the flag ```--lln``` to activate last layer normalization
-+ DATASET can be cifar10/cifar100.
++ CONV: bcop, cayley, soc
++ ACT: maxmin, hh1, hh2. hh1 and hh2 are the householder activations of order 1 and 2 respectively (both illustrated below).
++ BLOCKS: 1, 2, 3, 4, 5, 6, 7, 8
++ GAMMA: certificate regularization coefficient
++ Use ```--lln``` to enable last layer normalization
++ DATASET: cifar10/cifar100.
 
 ## How to train Standard Convnets using Orthogonal Convolutions?
 ```python train_standard.py --conv-layer CONV --model-name MODEL --dataset DATASET```
-+ CONV can be standard/bcop/cayley/soc
-+ MODEL can be resnet18/resnet34/resnet50/resnet101/resnet152
-+ DATASET can be cifar10/cifar100
++ CONV: standard, bcop, cayley, soc
++ MODEL: resnet18, resnet34, resnet50, resnet101, resnet152
++ DATASET: cifar10, cifar100
 
 ## Demonstration of Skew Orthogonal Convolutions
 
