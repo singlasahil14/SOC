@@ -3,11 +3,12 @@
 + **Skew Orthogonal Convolution (SOC)** is a convolution layer that has an Orthogonal Jacobian matrix and achieves state-of-the-art standard and provably robust accuracy compared to the other orthogonal convolutions. 
 + **Last Layer normalization (LLN)** leads to improved performance when the number of classes is large.
 + **Certificate Regularization (CR)** leads to significantly improved robustness certificates.
-+ **Householder Activations (HH)** improves the performance for deeper networks.
++ **Householder Activations (HH)** improve the performance for deeper networks.
 
 ## Prerequisites
 
-+ Python 3.7+, Pytorch 1.6+
++ Python 3.7 or 3.8, Pytorch 1.8+
++ NVIDIA Apex. Can be installed using ```conda install -c conda-forge nvidia-apex```
 + A recent NVIDIA GPU
 
 ## How to train 1-Lipschitz Convnets?
