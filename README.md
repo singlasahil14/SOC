@@ -33,7 +33,6 @@
 
 ## Demonstration of Householder Activations
 ![demo](./figures/hh1_demo.jpg)
-# ![demo](./figures/hh2_demo.png)
 
 ## Citations
 If you find this repository useful for your research, please cite:
