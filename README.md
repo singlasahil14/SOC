@@ -15,7 +15,7 @@
 
 ```python train_robust.py --conv-layer CONV --activation ACT --num-blocks BLOCKS --dataset DATASET --gamma GAMMA```
 + CONV: bcop, cayley, soc
-+ ACT: maxmin, hh1, hh2. hh1 and hh2 are the householder activations of order 1 and 2 respectively (both illustrated below).
++ ACT: maxmin, hh1, hh2. (hh1, hh2 are the householder activations of order 1, 2 respectively. both illustrated below).
 + BLOCKS: 1, 2, 3, 4, 5, 6, 7, 8
 + GAMMA: certificate regularization coefficient
 + Use ```--lln``` to enable last layer normalization
