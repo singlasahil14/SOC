@@ -40,10 +40,10 @@ If you find this repository useful for your research, please cite:
 }
 
 @inproceedings{singla2022improved,
-title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
-author={Sahil Singla and Surbhi Singla and Soheil Feizi},
-booktitle={International Conference on Learning Representations},
-year={2022}
+  title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
+  author={Sahil Singla and Surbhi Singla and Soheil Feizi},
+  booktitle={International Conference on Learning Representations},
+  year={2022}
 }
 ```
 
