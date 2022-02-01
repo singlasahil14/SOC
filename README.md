@@ -27,9 +27,11 @@
 + MODEL can be resnet18/resnet34/resnet50/resnet101/resnet152
 + DATASET can be cifar10/cifar100
 
-## Demonstration
+## Demonstration of Skew Orthogonal Convolutions
 
 ![demo](./figures/SOC_demo.png)
+
+## Demonstration of Householder Activations
 ![demo](./figures/hh1_demo.png)
 ![demo](./figures/hh2_demo.png)
 
