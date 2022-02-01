@@ -16,7 +16,7 @@
 + CONV_LAYER can be bcop/cayley/soc
 + ACTIVATION_NAME can be maxmin/hh1/hh2. hh1 is the householder activation of order 1, hh2 is the householder activation of order 2. Both are illustrated in Figures 1 and 2 in the paper titled "Improved deterministic l2 robustness on CIFAR-10 and CIFAR-100"
 + BETA is the certificate regularization coefficient
-+ Use --lln to activate last layer normalization
++ Use the flag ```--lln``` to activate last layer normalization
 + DATASET_NAME can be cifar10/cifar100.
 
 ## How to train Standard Convnets using orthogonal convolutions?
