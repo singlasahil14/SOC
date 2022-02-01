@@ -32,7 +32,7 @@
 ![demo](./figures/SOC_demo.png)
 
 ## Demonstration of Householder Activations
-+ Illustration of the hh1 activation function
++ Illustration of the hh1 $\sigma_\theta$ activation function
 ![demo](./figures/hh1_demo.jpg)
 
 
