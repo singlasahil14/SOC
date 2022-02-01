@@ -1,18 +1,98 @@
+from torch.autograd import Function
 import torch.nn.functional as F
 import torch.nn as nn
 import torch
 import numpy as np
 import math
 import time
-from einops import rearrange
+import einops
 
-from utils_conv import *
+def fantastic_four(conv_filter, num_iters=50):
+    out_ch, in_ch, h, w = conv_filter.shape
+    
+    u1 = torch.randn((1, in_ch, 1, w), device='cuda', requires_grad=False)
+    u1.data = l2_normalize(u1.data)
 
-class skew_conv(nn.Module):
+    u2 = torch.randn((1, in_ch, h, 1), device='cuda', requires_grad=False)
+    u2.data = l2_normalize(u2.data)
+
+    u3 = torch.randn((1, in_ch, h, w), device='cuda', requires_grad=False)
+    u3.data = l2_normalize(u3.data)
+
+    u4 = torch.randn((out_ch, 1, h, w), device='cuda', requires_grad=False)
+    u4.data = l2_normalize(u4.data)
+        
+    v1 = torch.randn((out_ch, 1, h, 1), device='cuda', requires_grad=False)
+    v1.data = l2_normalize(v1.data)
+
+    v2 = torch.randn((out_ch, 1, 1, w), device='cuda', requires_grad=False)
+    v2.data = l2_normalize(v2.data)
+
+    v3 = torch.randn((out_ch, 1, 1, 1), device='cuda', requires_grad=False)
+    v3.data = l2_normalize(v3.data)
+
+    v4 = torch.randn((1, in_ch, 1, 1), device='cuda', requires_grad=False)
+    v4.data = l2_normalize(v4.data)
+
+    for i in range(num_iters):
+        v1.data = l2_normalize((conv_filter.data*u1.data).sum((1, 3), keepdim=True).data)
+        u1.data = l2_normalize((conv_filter.data*v1.data).sum((0, 2), keepdim=True).data)
+        
+        v2.data = l2_normalize((conv_filter.data*u2.data).sum((1, 2), keepdim=True).data)
+        u2.data = l2_normalize((conv_filter.data*v2.data).sum((0, 3), keepdim=True).data)
+        
+        v3.data = l2_normalize((conv_filter.data*u3.data).sum((1, 2, 3), keepdim=True).data)
+        u3.data = l2_normalize((conv_filter.data*v3.data).sum(0, keepdim=True).data)
+        
+        v4.data = l2_normalize((conv_filter.data*u4.data).sum((0, 2, 3), keepdim=True).data)
+        u4.data = l2_normalize((conv_filter.data*v4.data).sum(1, keepdim=True).data)
+
+    return u1, v1, u2, v2, u3, v3, u4, v4
+    
+def l2_normalize(tensor, eps=1e-12):
+    norm = float(torch.sqrt(torch.sum(tensor.float() * tensor.float())))
+    norm = max(norm, eps)
+    ans = tensor / norm
+    return ans
+
+def transpose_filter(conv_filter):
+    conv_filter_T = torch.transpose(conv_filter, 0, 1)    
+    conv_filter_T = torch.flip(conv_filter_T, [2, 3])
+    return conv_filter_T
+
+class SOC_Function(Function):
+    @staticmethod
+    def forward(ctx, curr_z, conv_filter):
+        ctx.conv_filter = conv_filter
+        kernel_size = conv_filter.shape[2]
+        z = curr_z
+        curr_fact = 1.
+        for i in range(1, 14):
+            curr_z = F.conv2d(curr_z, conv_filter, 
+                              padding=(kernel_size//2, 
+                                       kernel_size//2))/float(i)
+            z = z + curr_z
+        return z
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        conv_filter = ctx.conv_filter
+        kernel_size = conv_filter.shape[2]
+        grad_input = grad_output
+        curr_fact = 1.
+        for i in range(1, 14):
+            grad_output = F.conv2d(grad_output, -conv_filter, 
+                              padding=(kernel_size//2, 
+                                       kernel_size//2))/float(i)
+            grad_input = grad_input + grad_output
+
+        return grad_input, None
+
+class SOC(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=None, 
-                 bias=True, train_terms=5, eval_terms=10, init_iters=50, update_iters=1, 
+                 bias=True, train_terms=5, eval_terms=12, init_iters=50, update_iters=1, 
                  update_freq=200, correction=0.7):
-        super(skew_conv, self).__init__()
+        super(SOC, self).__init__()
         assert (stride==1) or (stride==2)
         self.init_iters = init_iters
         self.out_channels = out_channels
@@ -35,12 +115,11 @@ class skew_conv(nn.Module):
                                                self.kernel_size)).cuda(),
                                                requires_grad=True)
         random_conv_filter_T = transpose_filter(self.random_conv_filter)
-        conv_filter = 0.5 * (self.random_conv_filter - random_conv_filter_T)
+        conv_filter = 0.5*(self.random_conv_filter - random_conv_filter_T)
         
         with torch.no_grad():
             u1, v1, u2, v2, u3, v3, u4, v4 = fantastic_four(conv_filter, 
-                                                num_iters=self.init_iters, 
-                                                return_vectors=True)
+                                                num_iters=self.init_iters)
             self.u1 = nn.Parameter(u1, requires_grad=False)
             self.v1 = nn.Parameter(v1, requires_grad=False)
             self.u2 = nn.Parameter(u2, requires_grad=False)
@@ -120,8 +199,8 @@ class skew_conv(nn.Module):
             num_terms = self.eval_terms
         
         if self.stride > 1:
-            x = rearrange(x, "b c (w k1) (h k2) -> b (c k1 k2) w h", 
-                          k1=self.stride, k2=self.stride)        
+            x = einops.rearrange(x, "b c (w k1) (h k2) -> b (c k1 k2) w h", 
+                                 k1=self.stride, k2=self.stride)
         
         if self.out_channels > self.in_channels:
             diff_channels = self.out_channels - self.in_channels
