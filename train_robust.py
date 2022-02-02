@@ -199,7 +199,7 @@ def main():
             losses_arr, correct_arr, certificates_arr)
         
         robust_acc = test_robust_acc_list[0]
-        if (robust_acc > prev_robust_acc):
+        if (robust_acc >= prev_robust_acc):
             torch.save(model.state_dict(), best_model_path)
             prev_robust_acc = robust_acc
             best_epoch = epoch
