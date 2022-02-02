@@ -8,6 +8,7 @@
 ## Prerequisites
 
 + Python 3.7 or 3.8, Pytorch 1.8+
++ einops. Can be installed using ```pip install einops```
 + NVIDIA Apex. Can be installed using ```conda install -c conda-forge nvidia-apex```
 + A recent NVIDIA GPU
 
