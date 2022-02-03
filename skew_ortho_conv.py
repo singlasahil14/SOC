@@ -210,7 +210,6 @@ class SOC(nn.Module):
             curr_z = x
 
         z = curr_z
-        curr_fact = 1.
         for i in range(1, num_terms+1):
             curr_z = F.conv2d(curr_z, conv_filter_n, 
                               padding=(self.kernel_size//2, 
