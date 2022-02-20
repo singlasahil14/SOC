@@ -44,18 +44,25 @@
 If you find this repository useful for your research, please cite:
 
 ```
+
 @inproceedings{singlafeiziSOC2021,
-  title={Skew Orthogonal Convolutions},
-  author={Sahil Singla and Soheil Feizi},
-  booktitle={ICML},
-  year={2021}
+  title = 	 {Skew Orthogonal Convolutions},
+  author =       {Singla, Sahil and Feizi, Soheil},
+  booktitle = 	 {Proceedings of the 38th International Conference on Machine Learning},
+  year = 	 {2021},
+  volume = 	 {139},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v139/singla21a/singla21a.pdf},
+  url = 	 {https://proceedings.mlr.press/v139/singla21a.html}
 }
 
-@inproceedings{singla2022improved,
+@inproceedings{
+  singla2022improved,
   title={Improved deterministic l2 robustness on {CIFAR}-10 and {CIFAR}-100},
   author={Sahil Singla and Surbhi Singla and Soheil Feizi},
   booktitle={International Conference on Learning Representations},
-  year={2022}
+  year={2022},
+  url={https://openreview.net/forum?id=tD7eCtaSkR}
 }
 ```
-
