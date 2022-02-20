@@ -49,9 +49,6 @@ If you find this repository useful for your research, please cite:
   author={Singla, Sahil and Feizi, Soheil},
   booktitle={Proceedings of the 38th International Conference on Machine Learning},
   year={2021},
-  volume={139},
-  series={Proceedings of Machine Learning Research},
-  publisher={PMLR},
   pdf={http://proceedings.mlr.press/v139/singla21a/singla21a.pdf},
   url={https://proceedings.mlr.press/v139/singla21a.html}
 }
